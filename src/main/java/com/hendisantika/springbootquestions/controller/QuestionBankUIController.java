@@ -85,4 +85,11 @@ public class QuestionBankUIController {
         model.addAttribute("categories", questionBankService.fetchAllCategories());
         return "editQuestion";
     }
+
+    @PostMapping("/category/delete")
+    public String deleteCategory(@RequestParam("categoryId") String categoryId) {
+        questionBankService.deleteCategory(categoryId);
+        return "redirect:/category";
+    }
+
 }
