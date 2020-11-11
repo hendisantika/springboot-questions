@@ -41,7 +41,7 @@ public class UserInfo implements Serializable {
     @Column(name = "roles")
     private String roles;
 
-    UserInfo(String username, String pwd, String roles) {
+    public UserInfo(String username, String pwd, String roles) {
         this.username = username;
         this.pwd = pwd;
         this.roles = roles;
