@@ -92,4 +92,9 @@ public class QuestionBankUIController {
         return "redirect:/category";
     }
 
+    @PostMapping("/questions/delete")
+    public String deleteQuestion(@RequestParam("questionId") String questionId) {
+        questionBankService.deleteQuestion(questionId);
+        return "redirect:/questions";
+    }
 }
