@@ -1,5 +1,7 @@
 package com.hendisantika.springbootquestions.controller;
 
+import com.hendisantika.springbootquestions.entity.Category;
+import com.hendisantika.springbootquestions.entity.QuestionAnswers;
 import com.hendisantika.springbootquestions.service.QuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,4 +52,10 @@ public class QuestionBankUIController {
         return "addCategory";
     }
 
+    @PostMapping("/questions/add")
+    public String addQuestion(Model model) {
+        model.addAttribute("qn", new QuestionAnswers());
+        model.addAttribute("categories", questionBankService.fetchAllCategories());
+        return "addQuestion";
+    }
 }
