@@ -65,4 +65,10 @@ public class QuestionBankUIController {
         questionBankService.saveCategory(category);
         return "redirect:/category";
     }
+
+    @PostMapping("/questions/save")
+    public String saveQuestion(@ModelAttribute("qn") QuestionAnswers question) {
+        questionBankService.saveQuestion(question);
+        return "redirect:/questions";
+    }
 }
