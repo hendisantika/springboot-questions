@@ -1,6 +1,7 @@
 package com.hendisantika.springbootquestions.service;
 
 import com.hendisantika.springbootquestions.entity.Category;
+import com.hendisantika.springbootquestions.entity.QuestionAnswers;
 import com.hendisantika.springbootquestions.repository.CategoryRepository;
 import com.hendisantika.springbootquestions.repository.QuestionAnswersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,16 @@ public class QuestionBankService implements IQuestionBankService {
     @Override
     public List<Category> fetchAllCategories() {
         return categoryRepository.findAllByOrderByCategoryId();
+    }
+
+    @Override
+    public List<QuestionAnswers> fetchAllQuestionsAndAnswers() {
+        return questionAnswersRepository.findAllByOrderByQuestionId();
+    }
+
+    @Override
+    public void saveCategory(Category category) {
+        categoryRepository.save(category);
     }
 
 }
