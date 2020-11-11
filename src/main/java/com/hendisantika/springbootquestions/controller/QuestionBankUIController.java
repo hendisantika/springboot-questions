@@ -36,4 +36,10 @@ public class QuestionBankUIController {
         model.addAttribute("categories", questionBankService.fetchAllCategories());
         return "category";
     }
+
+    @GetMapping("/questions")
+    public String showAllQuestions(Model model) {
+        model.addAttribute("questions", questionBankService.fetchAllQuestionsAndAnswers());
+        return "questions";
+    }
 }
