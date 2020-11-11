@@ -3,6 +3,7 @@ package com.hendisantika.springbootquestions.controller;
 import com.hendisantika.springbootquestions.service.QuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,4 +20,13 @@ public class QuestionBankUIController {
     @Autowired
     private QuestionBankService questionBankService;
 
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 }
