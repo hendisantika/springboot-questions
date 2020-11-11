@@ -42,4 +42,13 @@ public class QuestionBankService implements IQuestionBankService {
         categoryRepository.save(category);
     }
 
+    @Override
+    public void saveQuestion(QuestionAnswers question) {
+        questionAnswersRepository.save(question);
+    }
+
+    @Override
+    public void deleteQuestion(String questionId) {
+        questionAnswersRepository.deleteById(Integer.valueOf(questionId));
+    }
 }
