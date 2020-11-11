@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 /**
@@ -57,5 +58,11 @@ public class QuestionBankUIController {
         model.addAttribute("qn", new QuestionAnswers());
         model.addAttribute("categories", questionBankService.fetchAllCategories());
         return "addQuestion";
+    }
+
+    @PostMapping("/category/save")
+    public String saveCategory(@ModelAttribute("category") Category category) {
+        questionBankService.saveCategory(category);
+        return "redirect:/category";
     }
 }
