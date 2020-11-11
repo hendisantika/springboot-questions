@@ -1,5 +1,6 @@
 package com.hendisantika.springbootquestions.entity;
 
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "user_info")
+@Data
 @NoArgsConstructor
 public class UserInfo implements Serializable {
     private static final long serialVersionUID = 1L;
