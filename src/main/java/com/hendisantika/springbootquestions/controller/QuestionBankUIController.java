@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Created by IntelliJ IDEA.
@@ -70,5 +71,11 @@ public class QuestionBankUIController {
     public String saveQuestion(@ModelAttribute("qn") QuestionAnswers question) {
         questionBankService.saveQuestion(question);
         return "redirect:/questions";
+    }
+
+    @PostMapping("/category/edit")
+    public String editCategory(@RequestParam("categoryId") String categoryId, Model model) {
+        model.addAttribute("category", questionBankService.fetchCategory(categoryId));
+        return "editCategory";
     }
 }
