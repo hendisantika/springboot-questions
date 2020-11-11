@@ -78,4 +78,11 @@ public class QuestionBankUIController {
         model.addAttribute("category", questionBankService.fetchCategory(categoryId));
         return "editCategory";
     }
+
+    @PostMapping("/questions/edit")
+    public String editQuestion(@RequestParam("questionId") String questionId, Model model) {
+        model.addAttribute("qn", questionBankService.fetchQuestionAnswer(questionId));
+        model.addAttribute("categories", questionBankService.fetchAllCategories());
+        return "editQuestion";
+    }
 }
