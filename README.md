@@ -54,13 +54,32 @@ git clone https://github.com/hendisantika/springboot-questions.git
 cd springboot-questions
 ```
 
-### 2. Run with H2 Database (Development)
+### 2. Run with Docker Compose (Recommended)
+
+**Start PostgreSQL and pgAdmin:**
+
+```bash
+# Start database services
+docker compose up postgres pgadmin -d
+
+# Run Spring Boot app locally (connects to Docker PostgreSQL)
+mvn spring-boot:run -Dspring-boot.run.profiles=docker
+```
+
+**Or run everything in containers:**
+
+```bash
+# Start all services including the Spring Boot app
+docker compose --profile full-stack up -d
+```
+
+### 3. Run with H2 Database (Development)
 
 ```bash
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-### 3. Run with PostgreSQL (Production)
+### 4. Run with PostgreSQL (Production)
 
 Set up environment variables:
 
@@ -79,11 +98,13 @@ Then run:
 mvn spring-boot:run
 ```
 
-### 4. Access the Application
+### 5. Access the Application
 
 - **Web Interface**: http://localhost:8080
 - **H2 Console**: http://localhost:8080/h2-console (dev profile only)
+- **pgAdmin**: http://localhost:5050 (Docker Compose setup)
 - **API Endpoints**: http://localhost:8080/api/*
+- **Health Check**: http://localhost:8080/actuator/health
 
 ## 🔐 Default Users
 
@@ -199,15 +220,58 @@ The application provides a complete web interface with:
 - **CSRF Protection**: Disabled for API endpoints
 - **Frame Options**: Configured for H2 console access
 
+## 🐳 Docker Compose Setup
+
+This project includes a complete Docker Compose setup with PostgreSQL 17.5 and pgAdmin for easy development and
+deployment.
+
+### Services Included
+
+- **PostgreSQL 17.5**: Production database
+- **pgAdmin**: Web-based PostgreSQL administration
+- **Spring Boot App**: The main application (optional)
+
+### Docker Compose Commands
+
+```bash
+# Start database services only (recommended for development)
+docker compose up postgres pgadmin -d
+
+# Start all services including the app
+docker compose --profile full-stack up -d
+
+# View logs
+docker compose logs -f
+
+# Stop services
+docker compose down
+
+# Stop and remove all data
+docker compose down -v
+```
+
+### Service Access
+
+| Service         | URL                   | Credentials                         |
+|-----------------|-----------------------|-------------------------------------|
+| **PostgreSQL**  | localhost:5432        | questions_user / questions_password |
+| **pgAdmin**     | http://localhost:5050 | admin@questions.com / admin123      |
+| **Spring Boot** | http://localhost:8080 | admin/admin, user/pass              |
+
+For detailed Docker commands and troubleshooting, see [docker-commands.md](docker-commands.md).
+
 ## 🚀 Deployment
 
 ### Docker Support
 
+The project includes optimized Dockerfiles with multi-stage builds:
+
 ```dockerfile
-FROM openjdk:21-jre-slim
-COPY target/springboot-questions-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+FROM eclipse-temurin:21-jdk-alpine AS build
+# Build stage...
+
+FROM eclipse-temurin:21-jre-alpine
+# Runtime stage with security best practices
 ```
 
 ### Environment Variables
