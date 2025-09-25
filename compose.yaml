@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: postgres:17.5-alpine
+    container_name: springboot-questions-db
+    environment:
+      POSTGRES_DB: questions_db
+      POSTGRES_USER: questions_user
+      POSTGRES_PASSWORD: questions_password
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - questions-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U questions_user -d questions_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: springboot-questions-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@questions.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - questions-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: springboot-questions-app
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JDBC_DATABASE_URL: jdbc:postgresql://postgres:5432/questions_db
+      JDBC_DATABASE_USERNAME: questions_user
+      JDBC_DATABASE_PASSWORD: questions_password
+      OKTA_OAUTH_ISSUER: https://dev-test.okta.com/oauth2/default
+      OKTA_CLIENT_ID: test-client-id
+      OKTA_CLIENT_SECRET: test-client-secret
+    ports:
+      - "8080:8080"
+    networks:
+      - questions-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - full-stack
+
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  questions-network:
+    driver: bridge
