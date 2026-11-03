@@ -56,4 +56,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Update dependency graph
+      # Non-blocking: fails when "Dependency graph" is disabled in the repository settings.
+      continue-on-error: true
       uses: advanced-security/maven-dependency-submission-action@a64327a7329c9939cf675e458452febe1894a70c
