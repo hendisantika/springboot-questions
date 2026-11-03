@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17.5-alpine
+    image: postgres:17.11-alpine
     container_name: springboot-questions-db
     environment:
       POSTGRES_DB: questions_db
