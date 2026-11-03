@@ -1,13 +1,100 @@
 version: 2
 updates:
-  - package-ecosystem: maven
-    directory: "/"
-    schedule:
-      interval: daily
-      time: '05:00'
-      timezone: Asia/Jakarta
-    open-pull-requests-limit: 10
-  - package-ecosystem: "github-actions"
+  # Maven dependencies (pom.xml)
+  - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "daily"
+      time: "05:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 10
+    assignees:
+      - "hendisantika"
+    labels:
+      - "dependencies"
+      - "java"
+    commit-message:
+      prefix: "build(deps)"
+      prefix-development: "build(deps-dev)"
+      include: "scope"
+    # A dependency joins the first group it matches, so specific groups come first.
+    groups:
+      spring-security:
+        patterns:
+          - "org.springframework.security*"
+          - "com.okta*"
+      spring-boot:
+        patterns:
+          - "org.springframework*"
+      thymeleaf:
+        patterns:
+          - "org.thymeleaf*"
+      maven-patch-minor:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # GitHub Actions workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 5
+    assignees:
+      - "hendisantika"
+    labels:
+      - "dependencies"
+      - "github_actions"
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Base images in Dockerfile
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 5
+    assignees:
+      - "hendisantika"
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "build(docker)"
+    ignore:
+      # Stay on the Java 25 LTS line; bump the major (Java) version manually.
+      - dependency-name: "eclipse-temurin"
+        update-types:
+          - "version-update:semver-major"
+
+  # Images in compose.yaml (PostgreSQL, pgAdmin)
+  - package-ecosystem: "docker-compose"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "05:00"
+      timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 5
+    assignees:
+      - "hendisantika"
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "build(compose)"
+    ignore:
+      # PostgreSQL major upgrades need a data migration; do them manually.
+      - dependency-name: "postgres"
+        update-types:
+          - "version-update:semver-major"
