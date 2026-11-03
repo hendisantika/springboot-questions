@@ -1,5 +1,5 @@
 # Multi-stage build for Spring Boot application
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
 
 # Set working directory
 WORKDIR /app
@@ -18,7 +18,7 @@ COPY src/ ./src/
 RUN ./mvnw clean package -DskipTests -B
 
 # Runtime stage
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 # Add a non-root user
 RUN addgroup -g 1001 -S spring && adduser -u 1001 -S spring -G spring
