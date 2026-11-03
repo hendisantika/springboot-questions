@@ -1,6 +1,11 @@
 # Spring Boot Questions Management System
 
-A comprehensive web application built with Spring Boot 3.5.6 for managing question banks and categories. This
+[![Java CI with Maven](https://github.com/hendisantika/springboot-questions/actions/workflows/maven.yml/badge.svg)](https://github.com/hendisantika/springboot-questions/actions/workflows/maven.yml)
+![Java](https://img.shields.io/badge/Java-25-orange?logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.x-6DB33F?logo=springboot)
+[![Dependabot](https://img.shields.io/badge/Dependabot-enabled-025E8C?logo=dependabot)](.github/dependabot.yml)
+
+A comprehensive web application built with Spring Boot 4.1.x (Java 25) for managing question banks and categories. This
 application provides both web interface and REST API endpoints for creating, reading, updating, and deleting questions
 and categories.
 
@@ -30,19 +35,21 @@ and categories.
 
 ## 🛠 Technology Stack
 
-- **Framework**: Spring Boot 3.5.6
-- **Java Version**: Java 21
+- **Framework**: Spring Boot 4.1.x
+- **Java Version**: Java 25 (LTS)
 - **Database**: H2 (development), PostgreSQL (production)
 - **ORM**: Spring Data JPA with Hibernate
-- **Security**: Spring Security 6.x
+- **Security**: Spring Security 7.x + Okta Spring Boot Starter
 - **Template Engine**: Thymeleaf
 - **Build Tool**: Maven
-- **Testing**: JUnit 5, Spring Boot Test
+- **Testing**: JUnit Jupiter 6, Spring Boot Test
+- **CI/CD**: GitHub Actions (Temurin JDK 25)
+- **Dependency Updates**: Dependabot (Maven, GitHub Actions, Docker, Docker Compose)
 
 ## 📋 Prerequisites
 
-- Java 21 or higher
-- Maven 3.6 or higher
+- Java 25 or higher (e.g. [Eclipse Temurin 25](https://adoptium.net/))
+- Maven 3.9+ (or use the bundled Maven wrapper `./mvnw`)
 - PostgreSQL (for production use)
 
 ## 🚀 Quick Start
@@ -76,7 +83,7 @@ docker compose --profile full-stack up -d
 ### 3. Run with H2 Database (Development)
 
 ```bash
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 ### 4. Run with PostgreSQL (Production)
@@ -197,10 +204,34 @@ spring.datasource.driverClassName=org.postgresql.Driver
 Run tests with:
 
 ```bash
-mvn test
+./mvnw test
 ```
 
-The test configuration uses H2 in-memory database and mock OAuth2 settings.
+The test profile (`src/test/resources/application-test.properties`) uses an H2 in-memory database and dummy OAuth2
+values. Okta auto-configuration is excluded in tests, so no real identity provider is contacted.
+
+## ⚙️ Continuous Integration
+
+GitHub Actions workflow [`.github/workflows/maven.yml`](.github/workflows/maven.yml):
+
+- Runs on every push and pull request to `main` (and manually via `workflow_dispatch`)
+- Sets up **Temurin JDK 25** with Maven dependency caching
+- Builds and tests with `./mvnw -B package`
+- Submits the Maven dependency graph to GitHub (push to `main` only) for better Dependabot alerts
+
+## 🤖 Dependabot
+
+[`.github/dependabot.yml`](.github/dependabot.yml) keeps dependencies up to date:
+
+| Ecosystem      | Schedule                   | Notes                                                              |
+|----------------|----------------------------|--------------------------------------------------------------------|
+| Maven          | Daily, 05:00 Asia/Jakarta  | Grouped: Spring Security/Okta, Spring, Thymeleaf, other minor/patch |
+| GitHub Actions | Weekly (Monday)            | All actions grouped into one PR                                    |
+| Docker         | Weekly (Monday)            | `Dockerfile` base images; Temurin major bumps ignored              |
+| Docker Compose | Weekly (Monday)            | `compose.yaml` images; PostgreSQL major bumps ignored              |
+
+Every PR is labeled (`dependencies` + ecosystem) and uses conventional commit prefixes
+(`build(deps)`, `ci(deps)`, `build(docker)`, `build(compose)`).
 
 ## 🎨 Web Interface
 
@@ -267,10 +298,10 @@ For detailed Docker commands and troubleshooting, see [docker-commands.md](docke
 The project includes optimized Dockerfiles with multi-stage builds:
 
 ```dockerfile
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
 # Build stage...
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 # Runtime stage with security best practices
 ```
 
@@ -320,10 +351,14 @@ src/
 │       │   ├── index.html
 │       │   ├── login.html
 │       │   └── questions.html
-│       └── application.properties
+│       ├── application.properties
+│       ├── application-dev.properties
+│       └── application-docker.properties
 └── test/
-    └── java/com/hendisantika/springbootquestions/
-        └── SpringbootQuestionsApplicationTests.java
+    ├── java/com/hendisantika/springbootquestions/
+    │   └── SpringbootQuestionsApplicationTests.java
+    └── resources/
+        └── application-test.properties
 ```
 
 ## 🤝 Contributing
